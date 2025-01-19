@@ -1,5 +1,7 @@
 # TikTok Video Downloader and Compressor
 
+Note: This is intended to be used by linux wizards.
+
 ## Overview
 
 This script is designed to download, compress, and archive TikTok videos from a structured data export file, `schema.json`. It supports downloading personal videos, as well as videos from your favorites and browsing history, with multithreaded downloading for efficiency.
@@ -11,7 +13,6 @@ This script is designed to download, compress, and archive TikTok videos from a 
 - `requests` package
 - `argparse` package (part of Python 3.x standard library)
 - `concurrent.futures` package (part of Python 3.x standard library)
-- `ffmpeg` (optional, for video compression)
 
 ## Installation
 
@@ -20,11 +21,6 @@ This script is designed to download, compress, and archive TikTok videos from a 
    ```bash
     pip3 install requests
     ```
-
-
-Optional: Install ffmpeg for video compression.
-On Windows: Download and install FFmpeg.
-On macOS: Install via Homebrew: `brew install ffmpeg`
 
 ## Usage
 
@@ -49,7 +45,6 @@ To download videos with 4 concurrent download threads:
 Output
 
 - Downloaded Videos: Videos will be downloaded to the downloads directory.
-- Compressed Videos: If ffmpeg is available, they will be compressed and stored in the compressed directory.
 - Archive: A videos.zip file will be created containing all the processed videos.
 
 Logs
