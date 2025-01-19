@@ -668,7 +668,7 @@ class TikTokDownloader:
 
                     processed_urls.add(url)
                     videos_processed += 1
-
+            finally:
                     try:
                         result = future.result()
                         if result:
@@ -698,47 +698,6 @@ class TikTokDownloader:
                     # Update progress in GUI
                     if self.gui_callback:
                         self.gui_callback(videos_processed, total_videos)
-            finally:
-                self.current_executor.shutdown(wait=True)
-                self.current_executor = None
-
-                video = future_to_video[future]
-                url = video['url']
-
-                if url in processed_urls:
-                    logger.warning(f"Skipping duplicate URL: {url}")
-                    continue
-
-                processed_urls.add(url)
-                videos_processed += 1
-
-                try:
-                    result = future.result()
-                    if result:
-                        if isinstance(result, str):
-                            if os.path.exists(result) and os.path.getsize(result) > 0:
-                                successful_downloads.append(result)
-                                logger.info(
-                                    f"Verified successful download: {result} "
-                                    f"(Size: {os.path.getsize(result) / 1024:.2f}KB)"
-                                )
-                            else:
-                                logger.error(f"Download reported success but file is invalid: {result}")
-                                failed_downloads.append(url)
-                        else:
-                            successful_downloads.append(result)
-                            logger.info(f"Processed directory: {result}")
-                    else:
-                        failed_downloads.append(url)
-                        logger.error(f"Failed to process video: {url}")
-                except Exception as e:
-                    failed_downloads.append(url)
-                    logger.error(f"Exception while processing {url}: {e}")
-                    video_logger.error(f"Failed to download: {url}, Error: {str(e)}")
-
-                # Update progress in GUI
-                if self.gui_callback:
-                    self.gui_callback(videos_processed, total_videos)
 
             # Add batch results to overall totals
             all_successful_downloads.extend(successful_downloads)
