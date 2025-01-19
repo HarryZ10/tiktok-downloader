@@ -211,15 +211,15 @@ class TikTokGUI:
             text="Start Download",
             command=self.start_download,
             state=tk.DISABLED,
-            height=2,  # Set button height
-            width=20,  # Set button width
-            relief=tk.RAISED,  # Give it a raised look
-            font=('TkDefaultFont', 10, 'bold'),  # Bold font
-            bg='#e1e1e1',  # Light gray background
-            fg='black',    # Black text
-            activebackground='#d4d4d4',  # Slightly darker when clicked
-            activeforeground='black',    # Keep text black when clicked
-            disabledforeground='#666666'  # Darker gray when disabled
+            height=2,
+            width=20,
+            relief=tk.RAISED,
+            font=('TkDefaultFont', 10, 'bold'),
+            bg='#e1e1e1',
+            fg='black',
+            activebackground='#d4d4d4',
+            activeforeground='black',
+            disabledforeground='#666666'
         )
         self.start_button.grid(row=0, column=0, padx=5, pady=5)
 
@@ -228,15 +228,15 @@ class TikTokGUI:
             text="Stop",
             command=self.stop_download,
             state=tk.DISABLED,
-            height=2,  # Set button height
-            width=20,  # Set button width
-            relief=tk.RAISED,  # Give it a raised look
-            font=('TkDefaultFont', 10, 'bold'),  # Bold font
-            bg='#e1e1e1',  # Light gray background
-            fg='black',    # Black text
-            activebackground='#d4d4d4',  # Slightly darker when clicked
-            activeforeground='black',    # Keep text black when clicked
-            disabledforeground='#666666'  # Darker gray when disabled
+            height=2,
+            width=20,
+            relief=tk.RAISED,
+            font=('TkDefaultFont', 10, 'bold'),
+            bg='#e1e1e1',
+            fg='black',
+            activebackground='#d4d4d4',
+            activeforeground='black',
+            disabledforeground='#666666'
         )
         self.stop_button.grid(row=0, column=1, padx=5, pady=5)
 
@@ -849,29 +849,35 @@ def main():
 
     Creates root window and starts Tkinter main loop.
     """
-    # Set up signal handlers
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-
     try:
         root = tk.Tk()
-        TikTokGUI(root)
+        app = TikTokGUI(root)
 
-        # Handle window close button (X)
-        def on_closing():
-            signal_handler(signal.SIGINT, None)
-        root.protocol("WM_DELETE_WINDOW", on_closing)
+        if platform.system() == 'Darwin':  # macOS
+            root.bind('<Command-w>', lambda e: app.on_closing())
+            root.bind('<Command-q>', lambda e: app.on_closing())
+        else:  # Windows/Linux
+            root.bind('<Alt-F4>', lambda e: app.on_closing())
+            root.bind('<Control-w>', lambda e: app.on_closing())
+
+        # Use the class's on_closing method for the window close button
+        root.protocol("WM_DELETE_WINDOW", app.on_closing)
+
+        # Set up signal handlers after creating the app
+        def handle_signal(signum, frame):
+            app.on_closing()
+
+        signal.signal(signal.SIGINT, handle_signal)
+        signal.signal(signal.SIGTERM, handle_signal)
 
         root.mainloop()
 
-    except KeyboardInterrupt:
-        logger.info("\nReceived keyboard interrupt. Cleaning up...")
-        signal_handler(signal.SIGINT, None)
     except Exception as e:
         logger.error(f"Fatal error: {e}")
-        signal_handler(signal.SIGINT, None)
-
-
+        try:
+            root.destroy()
+        except:
+            pass
 
 if __name__ == "__main__":
     main()
