@@ -1,3 +1,5 @@
 .DS_Store
 *.log
 *.json
+build.py
+app.icns
