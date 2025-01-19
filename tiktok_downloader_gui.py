@@ -474,13 +474,16 @@ class TikTokDownloader:
     """
     def __init__(self, schema_path, max_workers=4, gui_callback=None, stop_event=None):
         self.schema_path = schema_path
-
         import sys
-        assert getattr(sys, 'frozen', False)
+        if getattr(sys, 'frozen', False):
+            # If the application is bundled by PyInstaller
+            application_path = os.path.dirname(sys.executable)
+        else:
+            # If running from a Python interpreter
+            application_path = os.path.dirname(os.path.abspath(__file__))
 
-        application_path = os.path.dirname(sys.executable)
+        # Create saves directory path relative to application location
         self.download_dir = os.path.join(application_path, "saves")
-
         logger.info(f"Setting download directory to: {self.download_dir}")
 
         self.max_workers = max_workers
