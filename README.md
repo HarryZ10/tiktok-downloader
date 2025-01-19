@@ -48,6 +48,10 @@ This Python application provides a graphical interface for downloading and archi
 Double click the TikTokDownloader Unix EXE. THIS will bring up
 a GUI and a terminal. You ignore the terminal.
 
+OR
+
+You can open terminal and run it by command.
+
 ### Using the GUI
 1. Click "Browse" to select your JSON file (from TikTok data export)
 2. Configure settings:
